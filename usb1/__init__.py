@@ -2429,10 +2429,8 @@ class USBContext:
                     self,
                     self.__finalizePollFDNotifiers, # Note: staticmethod
                     context_p=self.__context_p,
-                    unregisterFinalizer=functools.partial(
-                        self.__unregisterFinalizer,
-                        handle=finalizer_handle,
-                    ),
+                    handle=finalizer_handle,
+                    finalizer_dict=self.__finalizer_dict,
                     libusb_set_pollfd_notifiers=libusb1.libusb_set_pollfd_notifiers,
                 )
                 self.__registerFinalizer(finalizer_handle, finalizer)
@@ -2442,7 +2440,8 @@ class USBContext:
     @staticmethod
     def __finalizePollFDNotifiers(
         context_p,
-        unregisterFinalizer,
+        handle,
+        finalizer_dict,
         libusb_set_pollfd_notifiers,
 
         null_pointer=_null_pointer,
@@ -2455,7 +2454,7 @@ class USBContext:
             removed_cb_p,
             null_pointer,
         )
-        unregisterFinalizer()
+        finalizer_dict.pop(handle)
 
     @_validContext
     def getNextTimeout(self):
