@@ -179,7 +179,7 @@ def create_initialised_buffer(init):
     # cpython (3.5, 3.9) raises TypeError, pypy 5.4.1 raises ValueError
     except (TypeError, ValueError):
         # create our own writable buffer
-        init = bytearray(init)
+        init = bytearray(init, encoding='ascii')
         return string_type.from_buffer(init), init
 
 class DoomedTransferError(Exception):
